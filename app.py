@@ -11,7 +11,7 @@ st.write("Anne, Baba ve Abla için Ortak Koordinasyon Asistanı")
 
 # Veri Dosyaları
 CEDEP_FILE = "cedep_kayitlari.csv"
- EKRAN_FILE = "ekran_kayitlari.csv"
+EKRAN_FILE = "ekran_kayitlari.csv"
 
 # ÇEDEP Kayıt Fonksiyonu
 def kaydet_cedep(ilgilenen, etkinlik):
@@ -157,5 +157,3 @@ with tab3:
             st.info("Henüz kayıtlı bir ÇEDEP çalışması yok.")
     else:
         st.info("Henüz kayıt bulunmuyor. İlk çalışmayı yukarıdan ekleyebilirsiniz.")
-
-   
