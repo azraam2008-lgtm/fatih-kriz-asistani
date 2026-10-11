@@ -3,6 +3,7 @@ import time
 import pandas as pd
 import os
 from datetime import datetime
+import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Fatih Kriz ve ÇEDEP Asistanı", page_icon="🧩", layout="centered")
 
@@ -53,13 +54,45 @@ with tab1:
 with tab2:
     st.header("Ekran Süresi Sayaç Paneli")
     sure = st.slider("Dakika Seçin", 1, 30, 10)
+    
     if st.button("Süreyi Başlat"):
-        with st.empty():
-            for s in range(sure * 60, 0, -1):
-                dakika, saniye = divmod(s, 60)
-                st.subheader(f"Kalan Süre: {dakika:02d}:{saniye:02d}")
-                time.sleep(1)
-            st.success("🔔 SÜRE BİTTİ! Şimdi telefonu kapatma zamanı.")
+        placeholder = st.empty()
+        
+        # Geri sayım döngüsü
+        for s in range(sure * 60, 0, -1):
+            dakika, saniye = divmod(s, 60)
+            placeholder.subheader(f"Kalan Süre: {dakika:02d}:{saniye:02d}")
+            time.sleep(1)
+            
+        # Ses çalmasını sağlayan JavaScript kod bloğu (Web Audio API)
+        alarm_sesi_js = """
+        <script>
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 587.33; // Uyarı tonu frekansı
+            osc.start();
+            setTimeout(() => { osc.stop(); }, 1500); // 1.5 saniye ses
+        </script>
+        """
+        
+        # Sesi tetikle
+        components.html(alarm_sesi_js, height=0)
+        
+        # Süre bittiğinde çalışacak kırmızı flaş ve uyarı alanı (3 saniye boyunca)
+        for _ in range(3):
+            placeholder.markdown(
+                "<h1 style='color: red; text-align: center; font-size: 50px;'>🚨 SÜRE BİTTİ! 🚨</h1>", 
+                unsafe_allow_html=True
+            )
+            time.sleep(1)
+            placeholder.empty()
+            time.sleep(0.2)
+            
+        placeholder.error("🔔 SÜRE BİTTİ! Şimdi telefonu kapatma zamanı. Suçu saate atmayı unutmayın!")
 
 with tab3:
     st.header("Bugünkü ÇEDEP / Etkinlik Takibi")
@@ -84,3 +117,5 @@ with tab3:
             st.info("Henüz kayıtlı bir ÇEDEP çalışması yok.")
     else:
         st.info("Henüz kayıt bulunmuyor. İlk çalışmayı yukarıdan ekleyebilirsiniz.")
+
+   
