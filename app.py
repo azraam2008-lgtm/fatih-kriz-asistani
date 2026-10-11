@@ -9,7 +9,7 @@ st.set_page_config(page_title="Fatih Kriz ve ÇEDEP Asistanı", page_icon="🧩"
 st.title("🧩 Fatih Kriz ve ÇEDEP Destek Paneli")
 st.write("Anne, Baba ve Abla için Ortak Koordinasyon Asistanı")
 
-# Veri Dosyaları
+# Veri Dosyaları (Bulut sunucusunda ortak tutulur)
 CEDEP_FILE = "cedep_kayitlari.csv"
 EKRAN_FILE = "ekran_kayitlari.csv"
 
@@ -69,6 +69,7 @@ with tab2:
     if st.button("Süreyi Başlat ve Kaydet"):
         kaydet_ekran(sure_dk)
         st.success(f"{sure_dk} dakika ekran süresi başarıyla kaydedildi ve sayaç başlatıldı!")
+        st.rerun()  # Sayfayı anında yenileyerek geçmişin ve toplamın güncellenmesini sağlar
 
     # Arka planda çalışan ve sekme kapansa bile alarm veren JS/HTML Zamanlayıcı
     sure_saniye = sure_dk * 60
@@ -143,6 +144,7 @@ with tab3:
         if etkinlik.strip() != "":
             kaydet_cedep(ilgilenen, etkinlik)
             st.success(f"Harika! Kaydedildi: {ilgilenen} - {etkinlik}")
+            st.rerun()
         else:
             st.warning("Lütfen yapılan çalışmayı boş bırakmayın.")
             
